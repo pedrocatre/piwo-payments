@@ -1,0 +1,131 @@
+<!doctype html>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<link rel="stylesheet" href="{{url_for('static', filename='piwo-payments.css')}}">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+      integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<header>
+    <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-4">
+                    <h4 class="text-white">About</h4>
+                    <p class="text-muted">An e-commerce gateway that wants to be omni-channel ready #makepaymentsgreatagain</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a href="#" class="navbar-brand d-flex align-items-center">
+                <i class="fas fa-beer mr-2"></i> <strong>Piwo Payments</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader"
+                    aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main role="main">
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">Welcome</h1>
+            <p class="lead text-muted">...to your PSP dashboard! 💪
+            <p class="lead text-muted">Soon to be powered by <img class="payworks-img"
+                                                                  src="https://test.payworks.io/uis/mngr/img/favicon.ico?v=2"
+                                                                  alt="Payworks"></p></p>
+        </div>
+    </section>
+
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <h1><i class="fas fa-shopping-cart mr-2"></i> e-commerce transactions</h1>
+
+
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{transaction.id}}</td>
+                    <td>{{transaction.amount}} {{transaction.currency}}</td>
+                    <td>{{transaction.subject}}</td>
+                    <td>
+                        <div class="table-actions">
+                            {% if transaction.refundable_amount > 0 %}
+                            <form class="form-inline" action="{{url_for('refund')}}" method="POST">
+                                <input type="hidden" class="form-control" name="transactionId" value="{{transaction.id}}">
+                                <div class="form-group mx-sm-3 mb-2">
+                                    <label for="refundAmount" class="sr-only">Amount</label>
+                                    <input class="form-control" id="refundAmount" placeholder="refundable {{transaction.refundable_amount}}" name="refundAmount">
+                                </div>
+                                <button type="submit" class="btn btn-warning mb-2">Refund</button>
+                            </form>
+                            {% endif %}
+
+                            {% if transaction.captured_amount < transaction.amount %}
+                            <form class="form-inline" action="{{url_for('capture')}}" method="POST">
+                                <input type="hidden" class="form-control" name="transactionId" value="{{transaction.id}}">
+                                <div class="form-group mx-sm-3 mb-2">
+                                    <label for="captureAmount" class="sr-only">Amount</label>
+                                    <input class="form-control" name="captureAmount" id="captureAmount" placeholder="capturable {{transaction.amount - transaction.captured_amount}}">
+                                </div>
+                                <button type="submit" class="btn btn-primary mb-2">Capture</button>
+                            </form>
+                            {% endif %}
+
+
+                        </div>
+
+                    </td>
+                </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+
+<footer class="text-muted">
+    <div class="container">
+        <p class="float-right">
+            <a href="#">Back to top</a>
+        </p>
+        <p>&copy; Piwo Payments 2018</p>
+    </div>
+</footer>
+
+
+
+
+
+
+
+
+
+
