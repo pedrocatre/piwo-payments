@@ -30,11 +30,6 @@ def index():
     return render_template('index.html', transactions=transactions)
 
 
-@app.context_processor
-def context_processor():
-    return dict(transactions=['transaction 1', 'transaction 2'])
-
-
 if __name__ == '__main__':
     # debug=True makes it restart every time you make a change
     app.run(debug=True)

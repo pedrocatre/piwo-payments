@@ -1,3 +1,5 @@
+Coding camp skeleton.
+
 ## Installation
 
 Install flask
